@@ -92,54 +92,136 @@ import matplotlib.pyplot as plt
 #         print(result)
 
 
-def panda_open_file(FILENAME):
-    df = pd.read_csv(FILENAME)
-    list_1 = []
-    list_2 = []
-    """ Print Column Names """
-    # print(df.columns)
+# def panda_open_file(FILENAME):
+#     df = pd.read_csv(FILENAME)
+#     list_1 = []
+#     list_2 = []
+#     list_3 = []
+#     data_we_want = {}
+#     """ Print Column Names """
+#     # print(df.columns)
 
-    """ Read Each Column """
-    # print(df[['PCT_POP_INC_UNDER_200_POVERTY', ...]])
+#     """ Read Each Column """
+#     # print(df[['PCT_POP_INC_UNDER_200_POVERTY', ...]])
 
-    """ Read Each Row """
-    # print(df.iloc[row_range])
+#     """ Read Each Row """
+#     # print(df.iloc[row_range])
 
-    """ Look for specifics """
-    #  df.loc[df['Name'] == Conditional value]
+#     """ Look for specifics """
+#     #  df.loc[df['Name'] == Conditional value]
 
-    """ Sort by col name """
-    #df.sort_values(['Name', 'Name2'], ascending = TrueorFalse)
+#     """ Sort by col name """
+#     #df.sort_values(['Name', 'Name2'], ascending = TrueorFalse)
 
-    """ number of rows and columns in the data frame """
-    #df.shape
+#     """ number of rows and columns in the data frame """
+#     #df.shape
 
-    """ Iterate through Rows """
-    #for index, row in df.iterrows():
-        ## Can also get row name with index
-        #print(index, row['Name'])
-    keyword1 = input('keyword1 ')
-    keyword2 = input('keyword2 ')
-    for idx, row in df.iterrows():
-        ## Can also get row name with index
-        #print(index, row['Name'])
-        list_1.append(float(row[keyword1]))
-        list_2.append(float(row[keyword2]))
+#     """ Iterate through Rows """
+#     #for index, row in df.iterrows():
+#         ## Can also get row name with index
+#         #print(index, row['Name'])
+#     keyword1 = input('keyword1 ')
+#     keyword2 = input('keyword2 ')
+#     keyword3 = input('keyword3 ')
+#     for idx, row in df.iterrows():
+#         ## Can also get row name with index
+#         #print(index, row['Name'])
+#         list_1.append(float(row[keyword1]))
+#         list_2.append(float(row[keyword2]))
+#         list_3.append(float(row[keyword3]))
     
-    if type(list_1[-1] is not float):
-        list_1.pop()
-    if type(list_2[-1] is not float):
-        list_2.pop()
+#     if type(list_1[-1] is not float):
+#         list_1.pop()
+#     if type(list_2[-1] is not float):
+#         list_2.pop()
+#     if type(list_3[-1] is not float):
+#         list_3.pop()
     
-    print(list_1)
-    print(list_2)
+#     data_we_want[keyword1] = list_1
+#     data_we_want[keyword2] = list_2
+#     data_we_want[keyword3] = list_3
+
+#     df_we_want = pd.DataFrame(data_we_want, columns = [keyword1, keyword2, keyword3])
+
+#     corrMatrix = df_we_want.corr()
+
+#     sn.heatmap(corrMatrix, annot=True)    
+#     plt.show()
+
+#     print(df_we_want)
     
-    result = np.corrcoef(list_1, list_2)
-    print(result)
+    
+#     # result = np.corrcoef(list_1, list_2)
+#     # print(result)
 
-    return result
+#     return result
 
 
+def panda_open_file2(list_FILENAME):
+
+    data_we_want = {}
+    keywords = []
+
+    for filename in list_FILENAME:
+        temp_words = []
+        df = pd.read_csv(filename)
+        keyword  = "idk"
+        while keyword != "":
+            keyword = input(f'keyword for {filename}: ')
+            if keyword != "":
+               keywords.append(keyword)
+               temp_words.append(keyword)
+        
+        for word in temp_words:
+            data_we_want[word] = df[word]
+    
+    df_we_want = pd.DataFrame(data_we_want, columns = keywords)
+    corrMatrix = df_we_want.corr()
+
+    sn.heatmap(corrMatrix, annot=True)    
+    plt.show()
+
+    print(df_we_want)
+
+
+    # df1 = pd.read_csv('')
+    # df2 = pd.read_csv('')
+    # df3 = pd.read_csv('')
+    # """..."""
+   
+    
+
+    # keyword = True
+    # while keyword != 0:
+    #     keyword = input('keyword: ')
+    #     if keyword != 0:
+    #         data_we_want.append(keyword)
+
+    # for idx, row in df1.iterrows():
+        
+    #     list_1.append(float(row[keyword1]))
+    #     list_2.append(float(row[keyword2]))
+    #     list_3.append(float(row[keyword3]))
+    
+    # if type(list_1[-1] is not float):
+    #     list_1.pop()
+    # if type(list_2[-1] is not float):
+    #     list_2.pop()
+    # if type(list_3[-1] is not float):
+    #     list_3.pop()
+    
+    # data_we_want[keyword1] = list_1
+    # data_we_want[keyword2] = list_2
+    # data_we_want[keyword3] = list_3
+
+    # df_we_want = pd.DataFrame(data_we_want, columns = [keyword1, keyword2, keyword3])
+
+    # corrMatrix = df_we_want.corr()
+
+    # sn.heatmap(corrMatrix, annot=True)    
+    # plt.show()
+
+    # print(df_we_want)
 
 
 def algorithm(value):
@@ -148,10 +230,16 @@ def algorithm(value):
 
 
 def main():
-    FILENAME = input("Enter file name: ")
-    value = panda_open_file(FILENAME)
+    name_input = "idk"
+    FILENAMES = []
+    while name_input != "":
+        name_input = input("Enter file name: ")
+        if name_input != "":
+            FILENAMES.append(name_input)
+    value = panda_open_file2(FILENAMES)
+    # value = panda_open_file(FILENAME)
     # open_file(FILENAME)
-    something = algorithm(value)
+    # something = algorithm(value)
 
 
 
