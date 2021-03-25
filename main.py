@@ -6,6 +6,10 @@ import pandas as pd
 import glob
 import seaborn as sn
 import matplotlib.pyplot as plt
+import geocoder
+"""
+This program uses Pandas to correlate between different variables in different files, if need be. Visualized with maptplotlib and seaborn
+"""
 # from scipy import stats
 
 # def open_file(FILENAME):
@@ -228,6 +232,15 @@ def algorithm(value):
     #IDEK
     pass
 
+def geo_finder(FILENAMES):
+    data_we_want = []
+    df = pd.read_csv(FILENAMES[0])
+    keyword = input(f'keyword for {FILENAMES[0]}: ')
+    data_we_want = df[keyword]
+    g = geocoder.mapquest(data_we_want, method = 'batch', key = "dm4gLLXyErhK58scocXRGTtRzQGEAwKC")
+    for result in g:
+        print(result.address, result.latlng)
+
 
 def main():
     name_input = "idk"
@@ -236,7 +249,9 @@ def main():
         name_input = input("Enter file name: ")
         if name_input != "":
             FILENAMES.append(name_input)
+    # coordinates = geo_finder(FILENAMES)
     value = panda_open_file2(FILENAMES)
+
     # value = panda_open_file(FILENAME)
     # open_file(FILENAME)
     # something = algorithm(value)
