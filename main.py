@@ -15,30 +15,65 @@ This program uses Pandas to correlate between different variables in different f
 
 
 def panda_open_file2(list_FILENAME):
-
+    list_FILENAME = ["LA_Traffic_Volume_With_Coordinates.csv", "Air_Quality__LA_.csv"]
     data_we_want = {}
     keywords = []
 
-    for filename in list_FILENAME:
-        temp_words = []
-        df = pd.read_csv(filename)
-        keyword  = "idk"
-        while keyword != "":
-            keyword = input(f'keyword for {filename}: ')
-            if keyword != "":
-               keywords.append(keyword)
-               temp_words.append(keyword)
+    # for filename in list_FILENAME:
+    #     temp_words = []
+    #     df = pd.read_csv(filename)
+    #     keyword  = "idk"
+    #     while keyword != "":
+    #         keyword = input(f'keyword for {filename}: ')
+    #         if keyword != "":
+    #            keywords.append(keyword)
+    #            temp_words.append(keyword)
         
-        for word in temp_words:
-            data_we_want[word] = df[word]
+    #     for word in temp_words:
+    #         data_we_want[word] = df[word]
     
-    df_we_want = pd.DataFrame(data_we_want, columns = keywords)
-    corrMatrix = df_we_want.corr()
+    df = pd.read_csv("LA_Traffic_Volume_With_Coordinates.csv")
+    data_we_want["coordinates"] = df["coordinates"]
 
-    sn.heatmap(corrMatrix, annot=True)    
-    plt.show()
+    df = pd.read_csv("Air_Quality__LA_.csv")
+    data_we_want["Location"] = df["Location"]
+    # print(data_we_want["Location"], data_we_want["coordinates"])
+    close_enough = {}
+    df = pd.read_csv("Air_Quality__LA_.csv")
+    #print(df)
+    for location in data_we_want["Location"]:
+        location = location[1:-1]
+        location_list = location.split(", ")
+        #print(location)
+        loc_lat = float(location_list[0])
+        loc_long = float(location_list[1])
+        close_enough[location] = []
+        for coordinate in data_we_want["coordinates"]:
+            #print(coordinate)
+            #reak
+            try:
+                #coordinate = coordinate[1:-1]
+                coordinates_list = coordinate.split(", ")
+                #print(coordinate)
+                coord_lat = float(coordinates_list[0])
+                coord_long = float(coordinates_list[1])
+                #print(type(loc_lat))
+                #print(type(loc_long))
+                #print(type(coord_lat))
+                #print(type(coord_long))
+                if coord_lat == loc_lat or coord_lat < (loc_lat + 0.01) and coord_lat > (loc_lat - 0.01):
+                    close_enough[location].append(coordinate)
+            except:
+                pass
+    print(close_enough)
 
-    print(df_we_want)
+    # df_we_want = pd.DataFrame(data_we_want, columns = keywords)
+    # corrMatrix = df_we_want.corr()
+
+    # sn.heatmap(corrMatrix, annot=True)    
+    # plt.show()
+
+    # print(df_we_want)
 
 
 
@@ -51,12 +86,15 @@ def google_geo_finder(FILENAMES = "idk"):
     gmaps = googlemaps.Client(key = "AIzaSyAZIWy7l39FrbssxdhBnuDXr9OtAhm5NV0")
     df = pd.read_csv("NY_Traffic_Vol_2014-2019.csv")
     for location in str(df["Roadway Name"] + "from" + df["From"] + "to" + df["To"]):
-        geocode_result = gmaps.geocode(location)
-        result_we_want = geocode_result.pop()
-        result_we_want = result_we_want["address_components"]
-        result_we_want = result_we_want[1]
-        result_we_want = result_we_want["long_name"]
-        print(result_we_want)
+        try:
+            geocode_result = gmaps.geocode(location)
+            result_we_want = geocode_result.pop()
+            result_we_want = result_we_want["address_components"]
+            result_we_want = result_we_want[1]
+            result_we_want = result_we_want["long_name"]
+            print(result_we_want)
+        except:
+            geocode_result.append("N/A")
     # for location in str(df["Roadway Name"] + "from" + df["From"] + "to" + df["To"]):
     #     geocode_result = gmaps.geocode(location)
     #     result_we_want = geocode_result.pop()
@@ -109,17 +147,18 @@ def play():
     # print(df)
     # df["full address"] = sum_column
     # df.to_csv("NY_Traffic_Vol_2014-2019(3).csv")
-    # def main():
-    #     name_input = "idk"
-    #     FILENAMES = []
-    #     while name_input != "":
-    #         name_input = input("Enter file name: ")
-    #         if name_input != "":
-    #             FILENAMES.append(name_input)
+
+def main():
+    name_input = "idk"
+    FILENAMES = []
+    while name_input != "":
+        name_input = input("Enter file name: ")
+        if name_input != "":
+            FILENAMES.append(name_input)
         
-    #     google_geo_finder()
+    # google_geo_finder()
     # coordinates = geo_finder(FILENAMES)
-    # value = panda_open_file2(FILENAMES)
+    value = panda_open_file2(FILENAMES)
 
     # value = panda_open_file(FILENAME)
     # open_file(FILENAME)
@@ -127,7 +166,7 @@ def play():
 
 
 
-# main()
+main()
 
-play()
+#play()
 # google_geo_finder()
