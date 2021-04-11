@@ -1,6 +1,7 @@
 # Project Search Template #
 # Ijaz Ryan Owen Varinder Taymoor #
 import csv
+from os import close, error
 import numpy as np
 import pandas as pd
 import glob
@@ -32,22 +33,35 @@ def panda_open_file2(list_FILENAME):
     #     for word in temp_words:
     #         data_we_want[word] = df[word]
     
-    df = pd.read_csv("LA_Traffic_Volume_With_Coordinates.csv")
-    data_we_want["coordinates"] = df["coordinates"]
+    df_traffic = pd.read_csv("LA_Traffic_Volume_With_Coordinates.csv")
+    data_we_want["coordinates"] = df_traffic["coordinates"]
+    data_we_want["volume"] = df_traffic["24 Hr. Total Vol."]
 
-    df = pd.read_csv("Air_Quality__LA_.csv")
-    data_we_want["Location"] = df["Location"]
+
+    df_air = pd.read_csv("Air_Quality__LA_.csv")
+    data_we_want["count"] = df_air["Count"]
+
+    data_we_want["Location"] = df_air["Location"]
     # print(data_we_want["Location"], data_we_want["coordinates"])
     close_enough = {}
-    df = pd.read_csv("Air_Quality__LA_.csv")
+    # df_air = pd.read_csv("Air_Quality__LA_.csv")
+    # df_new = df_air.query("coordinates==33.9935686, -117.9274972")
+    # print(df_new["Total"])
     #print(df)
+    particle_and_traffic = {}
+    particle_and_traffic["particles"] = []
+    particle_and_traffic["traffic"] = []
+    air_index = 0
     for location in data_we_want["Location"]:
         location = location[1:-1]
         location_list = location.split(", ")
         #print(location)
         loc_lat = float(location_list[0])
         loc_long = float(location_list[1])
-        close_enough[location] = []
+        close_enough[location] = [[], []]
+        close_enough[location][0].append(float(data_we_want["count"][air_index]))
+        particle_and_traffic["particles"].append(float(data_we_want["count"][air_index]))
+        traffic_index = 0
         for coordinate in data_we_want["coordinates"]:
             #print(coordinate)
             #reak
@@ -61,11 +75,27 @@ def panda_open_file2(list_FILENAME):
                 #print(type(loc_long))
                 #print(type(coord_lat))
                 #print(type(coord_long))
+                
                 if coord_lat == loc_lat or coord_lat < (loc_lat + 0.01) and coord_lat > (loc_lat - 0.01):
-                    close_enough[location].append(coordinate)
+                    close_enough[location][1].append(int(data_we_want["volume"][traffic_index]))
+                    
+
+                traffic_index += 1
             except:
-                pass
+                # print(error)
+                traffic_index+=1
+        total = sum(close_enough[location][1])
+        particle_and_traffic["traffic"].append(total)
+        close_enough[location][1] = total
+        air_index+=1
     print(close_enough)
+    # part_and_traffic_df = pd.DataFrame(particle_and_traffic)
+    part_and_traffic_df = pd.DataFrame(particle_and_traffic, columns = ["particles", "traffic"])
+    corrMatrix = part_and_traffic_df.corr()
+    sn.heatmap(corrMatrix, annot = True)
+    plt.show()
+    #getting average
+    #look through close_enough and go key by key and make a new list
 
     # df_we_want = pd.DataFrame(data_we_want, columns = keywords)
     # corrMatrix = df_we_want.corr()
