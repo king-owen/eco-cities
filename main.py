@@ -112,12 +112,12 @@ def panda_open_file2(list_FILENAME):
 def google_geo_finder(FILENAMES = "idk"):
   
     all_addresses = []
-    gmaps = googlemaps.Client(key = "AIzaSyAIjTmxPvk-nA8Eswk2ffcmPs1DULOLPmk")
+    gmaps = googlemaps.Client(key = "AIzaSyCUJSFnd_DZX2j04BnSiz22pr8Nb3xbKyY")
     df = pd.read_csv("Traffic NY Update.csv")
     for location in df["Spec Boroughs"] + " New York":
         count = 0
         try:
-            print(location)
+            # print(location)
             geocode_result = gmaps.geocode(location)
             result_we_want = geocode_result.pop()
             address_components = result_we_want["address_components"]
@@ -127,12 +127,11 @@ def google_geo_finder(FILENAMES = "idk"):
                     all_addresses.append("Manhattan")
                     print("Manhattan")
                     count += 1
-
             elif "Brooklyn" in location:
                 if count == 0:
                     all_addresses.append("Brooklyn")
-                    print("Brooklyn")
                     count += 1
+                    print("Brooklyn")
 
             elif "Staten Island" in location:
                 if count == 0:
@@ -214,8 +213,8 @@ def google_geo_finder(FILENAMES = "idk"):
                             else:
                                 if count == 0:
                                     all_addresses.append("N/A")
-                                    print(":(")
                                     count += 1
+                                    print(":(")
 
         except:
             if count == 0:
