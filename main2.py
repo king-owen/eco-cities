@@ -15,47 +15,35 @@ This program uses Pandas to correlate between different variables in different f
 """
 
 
-def panda_open_file2(list_FILENAME):
+def LA_Correlation():
     list_FILENAME = ["LA_Traffic_Volume_With_Coordinates.csv", "Air_Quality__LA_.csv"]
     data_we_want = {}
     keywords = []
 
-    # for filename in list_FILENAME:
-    #     temp_words = []
-    #     df = pd.read_csv(filename)
-    #     keyword  = "idk"
-    #     while keyword != "":
-    #         keyword = input(f'keyword for {filename}: ')
-    #         if keyword != "":
-    #            keywords.append(keyword)
-    #            temp_words.append(keyword)
-        
-    #     for word in temp_words:
-    #         data_we_want[word] = df[word]
-    
+    """Create dataframes for both LA Traffic Volume and Air Quality using Pandas """
+    ## Use coordinates and total 24 hr volume columns from Traffic
     df_traffic = pd.read_csv("LA_Traffic_Volume_With_Coordinates.csv")
     data_we_want["coordinates"] = df_traffic["coordinates"]
     data_we_want["volume"] = df_traffic["24 Hr. Total Vol."]
 
-
+    ## Use coordinates and PM 2.5 particle count columns from Air Quality
     df_air = pd.read_csv("Air_Quality__LA_.csv")
     data_we_want["count"] = df_air["Count"]
 
     data_we_want["Location"] = df_air["Location"]
-    # print(data_we_want["Location"], data_we_want["coordinates"])
+
+    
     close_enough = {}
-    # df_air = pd.read_csv("Air_Quality__LA_.csv")
-    # df_new = df_air.query("coordinates==33.9935686, -117.9274972")
-    # print(df_new["Total"])
-    #print(df)
     particle_and_traffic = {}
     particle_and_traffic["particles"] = []
     particle_and_traffic["traffic"] = []
     air_index = 0
+    # For each coordinate set for Air Quality, we decided that within .01 coordinates warranted possible contribution to air particles from a vehicle
+    # Adding 
     for location in data_we_want["Location"]:
         location = location[1:-1]
         location_list = location.split(", ")
-        #print(location)
+ 
         loc_lat = float(location_list[0])
         loc_long = float(location_list[1])
         close_enough[location] = [[], []]
@@ -63,18 +51,11 @@ def panda_open_file2(list_FILENAME):
         particle_and_traffic["particles"].append(float(data_we_want["count"][air_index]))
         traffic_index = 0
         for coordinate in data_we_want["coordinates"]:
-            #print(coordinate)
-            #reak
+
             try:
-                #coordinate = coordinate[1:-1]
                 coordinates_list = coordinate.split(", ")
-                #print(coordinate)
                 coord_lat = float(coordinates_list[0])
                 coord_long = float(coordinates_list[1])
-                #print(type(loc_lat))
-                #print(type(loc_long))
-                #print(type(coord_lat))
-                #print(type(coord_long))
                 
                 if coord_lat == loc_lat or coord_lat < (loc_lat + 0.01) and coord_lat > (loc_lat - 0.01):
                     close_enough[location][1].append(int(data_we_want["volume"][traffic_index]))
@@ -82,28 +63,18 @@ def panda_open_file2(list_FILENAME):
 
                 traffic_index += 1
             except:
-                # print(error)
                 traffic_index+=1
         total = sum(close_enough[location][1])
         particle_and_traffic["traffic"].append(total)
         close_enough[location][1] = total
         air_index+=1
-    print(close_enough)
-    # part_and_traffic_df = pd.DataFrame(particle_and_traffic)
+    
+
+
     part_and_traffic_df = pd.DataFrame(particle_and_traffic, columns = ["particles", "traffic"])
     corrMatrix = part_and_traffic_df.corr()
     sn.heatmap(corrMatrix, annot = True)
     plt.show()
-    #getting average
-    #look through close_enough and go key by key and make a new list
-
-    # df_we_want = pd.DataFrame(data_we_want, columns = keywords)
-    # corrMatrix = df_we_want.corr()
-
-    # sn.heatmap(corrMatrix, annot=True)    
-    # plt.show()
-
-    # print(df_we_want)
 
 
 
@@ -113,11 +84,40 @@ def google_geo_finder(FILENAMES = "idk"):
   
     all_addresses = []
     gmaps = googlemaps.Client(key = "AIzaSyAIjTmxPvk-nA8Eswk2ffcmPs1DULOLPmk")
-    df = pd.read_csv("Traffic NY Update.csv")
-    for location in df["Spec Boroughs"] + " New York":
+    df = pd.read_csv("Air_Quality New York 2.csv")
+    print(df["Geo Place Name"])
+    # print(df["Spec Boroughs"][18471])
+    # print(df["Spec Boroughs"][183])
+    # test = gmaps.geocode(df["Spec Boroughs"][18471] + "New York")
+    # test2 = gmaps.geocode(df["Spec Boroughs"][195])
+    # print(test2)
+    # # test2 = test2.pop()
+    # # test2 = test2["formatted_address"]
+    # # test2 = test2.split(",")
+    # # test2 = test2[1]
+    # test = test.pop()
+    # # # # print(test)
+    # # print(test)
+    # test1 = test["address_components"]
+    # for list in test1:
+    #     for inner_list in list:
+    #         if "Manhattan" in list[inner_list]:
+    #             print("Manhattan")
+    # test2 = test["formatted_address"]
+            # if type(list[inner_list]) == list:
+            #     list[inner_list.pop()]
+            # print(list[inner_list])
+    # print(test["formatted_address"])
+    # return
+    # # test = test[1]
+    # # print(test)
+    # # print(test["long_name"])
+    # print(test2)
+    super_count = 0
+    for location in df["Geo Place Name"] + " New York":
         count = 0
         try:
-            print(location)
+            # print(location)
             geocode_result = gmaps.geocode(location)
             result_we_want = geocode_result.pop()
             address_components = result_we_want["address_components"]
@@ -214,16 +214,22 @@ def google_geo_finder(FILENAMES = "idk"):
                             else:
                                 if count == 0:
                                     all_addresses.append("N/A")
-                                    print(":(")
                                     count += 1
+                                    print(":(")
 
         except:
             if count == 0:
                 all_addresses.append("N/A")
                 print(":(")
                 count += 1
-    df["Even More Specific"] = all_addresses
-    df.to_csv("Traffic New York Update2.csv")
+        super_count += 1
+        # print(super_count)
+        # if super_count == 100:
+            # break
+    # print(len(all_addresses))
+    # return
+    df["Specific_Boroughs_Air"] = all_addresses
+    df.to_csv("Air Quality New York Update.csv")
     """
     for location in df["Spec Boroughs"] + " New York":
         try:
@@ -384,4 +390,5 @@ def main():
 # new_york()
 
 #play()
-google_geo_finder()
+# google_geo_finder()
+LA_Correlation()
