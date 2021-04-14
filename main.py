@@ -111,29 +111,153 @@ def panda_open_file2(list_FILENAME):
 
 def google_geo_finder(FILENAMES = "idk"):
   
-  
-  
-    gmaps = googlemaps.Client(key = "AIzaSyAZIWy7l39FrbssxdhBnuDXr9OtAhm5NV0")
-    df = pd.read_csv("NY_Traffic_Vol_2014-2019.csv")
-    for location in str(df["Roadway Name"] + "from" + df["From"] + "to" + df["To"]):
+    all_addresses = []
+    gmaps = googlemaps.Client(key = "AIzaSyAIjTmxPvk-nA8Eswk2ffcmPs1DULOLPmk")
+    df = pd.read_csv("Traffic NY Update.csv")
+    print(df["Spec Boroughs"])
+    # print(df["Spec Boroughs"][18471])
+    # print(df["Spec Boroughs"][183])
+    # test = gmaps.geocode(df["Spec Boroughs"][18471] + "New York")
+    # test2 = gmaps.geocode(df["Spec Boroughs"][195])
+    # print(test2)
+    # # test2 = test2.pop()
+    # # test2 = test2["formatted_address"]
+    # # test2 = test2.split(",")
+    # # test2 = test2[1]
+    # test = test.pop()
+    # # # # print(test)
+    # # print(test)
+    # test1 = test["address_components"]
+    # for list in test1:
+    #     for inner_list in list:
+    #         if "Manhattan" in list[inner_list]:
+    #             print("Manhattan")
+    # test2 = test["formatted_address"]
+            # if type(list[inner_list]) == list:
+            #     list[inner_list.pop()]
+            # print(list[inner_list])
+    # print(test["formatted_address"])
+    # return
+    # # test = test[1]
+    # # print(test)
+    # # print(test["long_name"])
+    # print(test2)
+    for location in df["Spec Boroughs"] + " New York":
         try:
+            print(location)
             geocode_result = gmaps.geocode(location)
             result_we_want = geocode_result.pop()
-            result_we_want = result_we_want["address_components"]
-            result_we_want = result_we_want[1]
-            result_we_want = result_we_want["long_name"]
-            print(result_we_want)
+            address_components = result_we_want["address_components"]
+            formatted_address = result_we_want["formatted_address"]
+            if "Manhattan" in location:
+                all_addresses.append("Manhattan")
+                print("Manhattan")
+
+            elif "Brooklyn" in location:
+                all_addresses.append("Brooklyn")
+                print("Brooklyn")
+
+            elif "Staten Island" in location:
+                all_addresses.append("Staten Island")
+                print("Staten Island")
+
+            elif "Queens" in location:
+                all_addresses.append("Queens")
+                print("Queens")
+
+            elif "Bronx" in location:
+                all_addresses.append("Bronx")
+                print("Bronx")
+
+            elif "Manhattan" in formatted_address:
+                all_addresses.append("Manhattan")
+                print("Manhattan")
+            elif "Brooklyn" in formatted_address:
+                all_addresses.append("Brooklyn")
+                print("Brooklyn")
+            elif "Staten Island" in formatted_address:
+                all_addresses.append("Staten Island")
+                print("Staten Island")
+            elif "Queens" in formatted_address:
+                all_addresses.append("Queens")
+                print("Queens")
+            elif "Bronx" in formatted_address:
+                all_addresses.append("Bronx")
+                print("Bronx")
+            else:
+                count = 0
+                for list in address_components:
+                    for inner_list in list:
+                        if count == 0:
+                            if "Manhattan" in list[inner_list]:
+                                all_addresses.append("Manhattan")
+                                count += 1
+                                print("Manhattan")
+                                
+                            elif "Brooklyn" in list[inner_list]:
+                                all_addresses.append("Brooklyn")
+                                count += 1
+                                print("Brooklyn")
+                                
+                            elif "Staten Island" in list[inner_list]:
+                                all_addresses.append("Staten Island")
+                                count += 1
+                                print("Staten Island")
+                            
+                            elif "Queens" in list[inner_list]:
+                                all_addresses.append("Queens")
+                                count += 1
+                                print("Queens")
+                            
+                            elif "Bronx" in list[inner_list]:
+                                all_addresses.append("Bronx")
+                                count += 1
+                                print("Bronx")
+                                
+
         except:
             geocode_result.append("N/A")
+            print(":(")
+    df["Even More Specific"] = all_addresses
+    df.to_csv("Traffic New York Update2.csv")
+    """
+    for location in df["Spec Boroughs"] + " New York":
+        try:
+            print(location)
+            geocode_result = gmaps.geocode(location)
+            result_we_want = geocode_result.pop()
+            address_components = result_we_want["address_components"]
+            address_components = address_components[1]
+            address_components = address_components["long_name"]
+            formatted_address = result_we_want["formatted_address"]
+            formatted_address = formatted_address.split(",")
+            formatted_address = formatted_address[1]
+
+            if "Manhattan" or "Brooklyn" or "Queens" or "Staten Island" or "Bronx" in address_components:
+                geocode_result.append(address_components)
+                print(address_components)
+            else:
+                geocode_result.append(formatted_address)
+                print(formatted_address)
+            # # result_we_want = result_we_want["long_name"]
+            # print(result_we_want)
+        except:
+            geocode_result.append("N/A")
+            print("N/A")
+    
+    
     # for location in str(df["Roadway Name"] + "from" + df["From"] + "to" + df["To"]):
     #     geocode_result = gmaps.geocode(location)
     #     result_we_want = geocode_result.pop()
-        
+    df["Even More Specific"] = geocode_result
+    df.to_csv("Traffic New York Update2.csv")
+
+ 
     # print(geocode_result)
     print("wtf")
     # all_coordinates = []
     # for location in df["Location"]:
-  
+    """
   
   
     """For checking geocode in LA"""
@@ -178,6 +302,62 @@ def play():
     # df["full address"] = sum_column
     # df.to_csv("NY_Traffic_Vol_2014-2019(3).csv")
 
+
+
+def new_york():
+    specific_borough = []
+    traffic_new_york_df = pd.read_csv("NY_Traffic_Vol_2014-2019(3).csv")
+    for borough in traffic_new_york_df["Boroughs"]:
+        # print(borough)
+        if "Bronx" or "Laconia" or "Canal" or "Fordham" or "Van Cortland" or "Pelham" or "Netherland" or "University Heights" or "East 153" or "East 156" or "Concourse" or "Bartow" in str(borough):
+            borough = "Bronx"
+            # print(borough)
+        elif "Harlem" or "Adam Clayton" or "East 46th A" in str(borough):
+            borough = "Manhattan"
+            # print(borough)
+        elif "Manhattan" in str(borough):
+            borough = "Manhattan"
+        elif "Brooklyn" in str(borough):
+            borough = "Brooklyn"
+        elif "Queens" or "Auburndale" or "Jamaica" in str(borough):
+            borough = "Queens"
+        elif "Staten" in str(borough):
+            borough = "Staten Island"
+        
+        specific_borough.append(borough)
+    traffic_new_york_df["Spec Boroughs"] = specific_borough
+    traffic_new_york_df.to_csv("Traffic NY Update.csv")
+# def google_geo_finder(FILENAMES = "idk"):
+  
+  
+  
+#     gmaps = googlemaps.Client(key = "AIzaSyAZIWy7l39FrbssxdhBnuDXr9OtAhm5NV0")
+#     df = pd.read_csv("NY_Traffic_Vol_2014-2019.csv")
+#     for location in str(df["Roadway Name"] + "from" + df["From"] + "to" + df["To"]):
+#         try:
+#             geocode_result = gmaps.geocode(location)
+#             result_we_want = geocode_result.pop()
+#             result_we_want = result_we_want["address_components"]
+#             result_we_want = result_we_want[1]
+#             result_we_want = result_we_want["long_name"]
+#             print(result_we_want)
+#         except:
+#             geocode_result.append("N/A")
+#     # for location in str(df["Roadway Name"] + "from" + df["From"] + "to" + df["To"]):
+#     #     geocode_result = gmaps.geocode(location)
+#     #     result_we_want = geocode_result.pop()
+        
+#     # print(geocode_result)
+#     print("wtf")
+#     # all_coordinates = []
+#     # for location in df["Location"]:
+  
+
+
+
+
+
+
 def main():
     name_input = "idk"
     FILENAMES = []
@@ -196,7 +376,8 @@ def main():
 
 
 
-main()
+# main()
+# new_york()
 
 #play()
-# google_geo_finder()
+google_geo_finder()
