@@ -83,7 +83,7 @@ def LA_Correlation():
 def google_geo_finder(FILENAMES = "idk"):
   
     all_addresses = []
-    gmaps = googlemaps.Client(key = "AIzaSyAIjTmxPvk-nA8Eswk2ffcmPs1DULOLPmk")
+    gmaps = googlemaps.Client(key = "AIzaSyDb7vlAJ42F0-dw6acYl9U1ykP2fP9xwMQ")
     df = pd.read_csv("Air_Quality New York 2.csv")
     print(df["Geo Place Name"])
     # print(df["Spec Boroughs"][18471])
@@ -211,11 +211,10 @@ def google_geo_finder(FILENAMES = "idk"):
                                     all_addresses.append("Bronx")
                                     count += 1
                                     print("Bronx")
-                            else:
-                                if count == 0:
-                                    all_addresses.append("N/A")
-                                    count += 1
-                                    print(":(")
+                if count == 0:
+                    all_addresses.append("N/A")
+                    count += 1
+                    print("N/A")
 
         except:
             if count == 0:
@@ -229,7 +228,7 @@ def google_geo_finder(FILENAMES = "idk"):
     # print(len(all_addresses))
     # return
     df["Specific_Boroughs_Air"] = all_addresses
-    df.to_csv("Air Quality New York Update.csv")
+    df.to_csv("Air Quality New York Update2.csv")
     """
     for location in df["Spec Boroughs"] + " New York":
         try:
@@ -390,5 +389,5 @@ def main():
 # new_york()
 
 #play()
-# google_geo_finder()
-LA_Correlation()
+google_geo_finder()
+# LA_Correlation()

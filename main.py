@@ -116,6 +116,7 @@ def google_geo_finder(FILENAMES = "idk"):
     df = pd.read_csv("Traffic NY Update.csv")
     for location in df["Spec Boroughs"] + " New York":
         count = 0
+        current_address = "N/A"
         try:
             # print(location)
             geocode_result = gmaps.geocode(location)
@@ -124,57 +125,67 @@ def google_geo_finder(FILENAMES = "idk"):
             formatted_address = result_we_want["formatted_address"]
             if "Manhattan" in location:
                 if count == 0:
+                    current_address = "Manhattan"
                     all_addresses.append("Manhattan")
-                    print("Manhattan")
+                    print(current_address)
                     count += 1
             elif "Brooklyn" in location:
                 if count == 0:
+                    current_address = "Brooklyn"
                     all_addresses.append("Brooklyn")
                     count += 1
-                    print("Brooklyn")
+                    print(current_address)
 
             elif "Staten Island" in location:
                 if count == 0:
+                    current_address = "Staten Island"
                     all_addresses.append("Staten Island")
-                    print("Staten Island")
+                    print(current_address)
                     count += 1
 
             elif "Queens" in location:
                 if count == 0:
+                    current_address = "Queens"
                     all_addresses.append("Queens")
-                    print("Queens")
+                    print(current_address)
                     count += 1
 
             elif "Bronx" in location:
                 if count == 0:
+                    current_address = "Bronx"
                     all_addresses.append("Bronx")
-                    print("Bronx")
+                    print(current_address)
                     count += 1
 
             elif "Manhattan" in formatted_address:
                 if count == 0:
+                    current_address = "Manhattan"
                     all_addresses.append("Manhattan")
-                    print("Manhattan")
+                    print(current_address)
                     count += 1
             elif "Brooklyn" in formatted_address:
                 if count == 0:
+                    current_address = "Brooklyn"
                     all_addresses.append("Brooklyn")
-                    print("Brooklyn")
+                    print(current_address)
                     count += 1
             elif "Staten Island" in formatted_address:
                 if count == 0:
+                    current_address = "Staten Island"
                     all_addresses.append("Staten Island")
-                    print("Staten Island")
+                    print(current_address)
                     count += 1
             elif "Queens" in formatted_address:
                 if count == 0:
+                    current_address = "Queens"
                     all_addresses.append("Queens")
-                    print("Queens")
+                    print(current_address)
                     count += 1
             elif "Bronx" in formatted_address:
                 if count == 0:
+                    current_address = "Bronx"
                     all_addresses.append("Bronx")
-                    print("Bronx")
+                    print(current_address)
                     count += 1
             else:
 
@@ -183,38 +194,43 @@ def google_geo_finder(FILENAMES = "idk"):
                         if count == 0:
                             if "Manhattan" in list[inner_list]:
                                 if count == 0:
+                                    current_address = "Manhattan"
                                     all_addresses.append("Manhattan")
                                     count += 1
                                     print("Manhattan")
                                 
                             elif "Brooklyn" in list[inner_list]:
                                 if count == 0:
+                                    current_address = "Brooklyn"
                                     all_addresses.append("Brooklyn")
                                     count += 1
                                     print("Brooklyn")
                                 
                             elif "Staten Island" in list[inner_list]:
                                 if count == 0:
+                                    current_address = "Staten Island"
                                     all_addresses.append("Staten Island")
                                     count += 1
                                     print("Staten Island")
                             
                             elif "Queens" in list[inner_list]:
                                 if count == 0:
+                                    current_address = "Queens"
                                     all_addresses.append("Queens")
                                     count += 1
                                     print("Queens")
                             
                             elif "Bronx" in list[inner_list]:
                                 if count == 0:
+                                    current_address = "Bronx"
                                     all_addresses.append("Bronx")
                                     count += 1
                                     print("Bronx")
-                            else:
-                                if count == 0:
-                                    all_addresses.append("N/A")
-                                    count += 1
-                                    print(":(")
+                if count == 0:
+                    all_addresses.append("N/A")
+                    count += 1
+                    print("N/A")
+                            
 
         except:
             if count == 0:
@@ -261,18 +277,17 @@ def google_geo_finder(FILENAMES = "idk"):
     # all_coordinates = []
     # for location in df["Location"]:
     """
-  
+    
   
     """For checking geocode in LA"""
     #     try:
-    #         geocode_result = gmaps.geocode(location)
-    #         # print(geocode_result)
-    #         result_we_want = geocode_result.pop()
-    #         coordinates = (str(result_we_want["geometry"]["location"]))[1:-1]
-    #         coordinates = coordinates.replace("'lat': ", "")
-    #         coordinates = coordinates.replace("'lng': ", "")
-    #         all_coordinates.append(coordinates)
-    #         print(coordinates)
+geocode_result = gmaps.geocode(location)
+result_we_want = geocode_result.pop()
+coordinates = (str(result_we_want["geometry"]["location"]))[1:-1]
+coordinates = coordinates.replace("'lat': ", "")
+coordinates = coordinates.replace("'lng': ", "")
+all_coordinates.append(coordinates)
+print(coordinates)
     #     except:
     #         all_coordinates.append("N/A")
     # df["coordinates"] = all_coordinates
