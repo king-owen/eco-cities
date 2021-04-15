@@ -15,6 +15,79 @@ This program uses Pandas to correlate between different variables in different f
 """
 
 
+def new_york_correlation():
+    df_traffic = pd.read_csv("Traffic New York Update2.csv")
+    df_air = pd.read_csv("Air Quality New York Update2.csv")
+    traffic_list = [0, 0, 0, 0, 0]
+    air_list = [0, 0, 0, 0, 0]
+    # traffic_dict = {"Brooklyn" : 0, "Manhattan": 0, "Queens": 0, "Bronx": 0, "Staten Island": 0}
+    # air_dict = {"Brooklyn": 0, "Manhattan": 0, "Queens": 0, "Bronx": 0, "Staten Island": 0}
+    traffic_index = 0
+    for num in df_traffic["sum"]:
+        try:
+            if df_traffic["Even More Specific"][traffic_index] == "Bronx" and "2014" in df_traffic["Date"][traffic_index]:
+                traffic_list[0] += int(num)
+                # traffic_dict["Bronx"] += int(num)
+            elif df_traffic["Even More Specific"][traffic_index] == "Queens" and "2014" in df_traffic["Date"][traffic_index]:
+                traffic_list[1] += int(num)
+            elif df_traffic["Even More Specific"][traffic_index] == "Manhattan" and "2014" in df_traffic["Date"][traffic_index]:
+                traffic_list[2] += int(num)
+            elif df_traffic["Even More Specific"][traffic_index] == "Staten Island" and "2014" in df_traffic["Date"][traffic_index]:
+                traffic_list[3] += int(num)
+            elif df_traffic["Even More Specific"][traffic_index] == "Brooklyn" and "2014" in df_traffic["Date"][traffic_index]:
+                traffic_list[4] += int(num)
+            traffic_index += 1
+        except:
+            print(":(")
+            traffic_index += 1
+    
+    air_index = 0
+    for num in df_air["Data Value"]:
+        try:
+            if df_air["Specific_Boroughs_Air"][air_index] == "Bronx" and "Average 2014" in df_air["Time Period"][air_index]:
+                air_list[0] += float(num)
+                # air_dict["Bronx"] += float(num)
+            if df_air["Specific_Boroughs_Air"][air_index] == "Queens" and "Average 2014" in df_air["Time Period"][air_index]:
+                air_list[1] += float(num)   
+            if df_air["Specific_Boroughs_Air"][air_index] == "Manhattan" and "Average 2014" in df_air["Time Period"][air_index]:
+                 air_list[2] += float(num)
+                #air_dict["Manhattan"] += float(num)   
+            if df_air["Specific_Boroughs_Air"][air_index] == "Staten Island" and "Average 2014" in df_air["Time Period"][air_index]:
+                air_list[3] += float(num) 
+            if df_air["Specific_Boroughs_Air"][air_index] == "Brooklyn" and "Average 2014" in df_air["Time Period"][air_index]:
+                air_list[4] += float(num)
+            air_index += 1
+        except:
+            print(":(")
+            air_index += 1
+    
+    print(traffic_list)
+    print(air_list)
+    particle_and_traffic_df = pd.DataFrame(list(zip(traffic_list, air_list)), columns = ["Traffic", "Particles"])
+    print(particle_and_traffic_df)
+    corrMatrix = particle_and_traffic_df.corr()
+    sn.heatmap(corrMatrix, annot = True)
+    plt.show()
+    
+def rsec():
+    df_rsec = pd.read_csv("rsec.csv")
+    poverty_list = []
+    asthma_list = []
+    index = 0
+    for num in df_rsec["PCT_ADULT_WITH_ASTHMA"]:
+        try:
+            asthma_list.append(float(num))
+            poverty_list.append(float(df_rsec["PCT_POP_INC_UNDER_200_POVERTY"][index]))
+            index += 1
+        except:
+            index += 1
+            continue
+    pov_and_asthma_df = pd.DataFrame(list(zip(asthma_list, poverty_list)), columns = ["Asthma", "Poverty"])
+    corrMatrix = pov_and_asthma_df.corr()
+    sn.heatmap(corrMatrix, annot = True)
+    plt.show()
+
+
 def panda_open_file2(list_FILENAME):
     list_FILENAME = ["LA_Traffic_Volume_With_Coordinates.csv", "Air_Quality__LA_.csv"]
     data_we_want = {}
@@ -281,13 +354,13 @@ def google_geo_finder(FILENAMES = "idk"):
   
     """For checking geocode in LA"""
     #     try:
-geocode_result = gmaps.geocode(location)
-result_we_want = geocode_result.pop()
-coordinates = (str(result_we_want["geometry"]["location"]))[1:-1]
-coordinates = coordinates.replace("'lat': ", "")
-coordinates = coordinates.replace("'lng': ", "")
-all_coordinates.append(coordinates)
-print(coordinates)
+# geocode_result = gmaps.geocode(location)
+# result_we_want = geocode_result.pop()
+# coordinates = (str(result_we_want["geometry"]["location"]))[1:-1]
+# coordinates = coordinates.replace("'lat': ", "")
+# coordinates = coordinates.replace("'lng': ", "")
+# all_coordinates.append(coordinates)
+# print(coordinates)
     #     except:
     #         all_coordinates.append("N/A")
     # df["coordinates"] = all_coordinates
@@ -305,7 +378,7 @@ print(coordinates)
 
 
 def play():
-    df = pd.read_csv("NY_Traffic_Vol_2014-2019.csv")
+    df = pd.read_csv("NY_Traffic_Vol_2014-2014.csv")
     # totals = []
     # print(df)
     # print(df["0"])
@@ -318,13 +391,13 @@ def play():
     # print(df["Roadway Name"])
     # print(df)
     # df["full address"] = sum_column
-    # df.to_csv("NY_Traffic_Vol_2014-2019(3).csv")
+    # df.to_csv("NY_Traffic_Vol_2014-2014(3).csv")
 
 
 
 def new_york():
     specific_borough = []
-    traffic_new_york_df = pd.read_csv("NY_Traffic_Vol_2014-2019(3).csv")
+    traffic_new_york_df = pd.read_csv("NY_Traffic_Vol_2014-2014(3).csv")
     for borough in traffic_new_york_df["Boroughs"]:
         # print(borough)
         if "Bronx" or "Laconia" or "Canal" or "Fordham" or "Van Cortland" or "Pelham" or "Netherland" or "University Heights" or "East 153" or "East 156" or "Concourse" or "Bartow" in str(borough):
@@ -346,11 +419,12 @@ def new_york():
     traffic_new_york_df["Spec Boroughs"] = specific_borough
     traffic_new_york_df.to_csv("Traffic NY Update.csv")
 # def google_geo_finder(FILENAMES = "idk"):
+
   
   
   
 #     gmaps = googlemaps.Client(key = "AIzaSyAZIWy7l39FrbssxdhBnuDXr9OtAhm5NV0")
-#     df = pd.read_csv("NY_Traffic_Vol_2014-2019.csv")
+#     df = pd.read_csv("NY_Traffic_Vol_2014-2014.csv")
 #     for location in str(df["Roadway Name"] + "from" + df["From"] + "to" + df["To"]):
 #         try:
 #             geocode_result = gmaps.geocode(location)
@@ -398,4 +472,6 @@ def main():
 # new_york()
 
 #play()
-google_geo_finder()
+# google_geo_finder()
+new_york_correlation()
+# rsec()
